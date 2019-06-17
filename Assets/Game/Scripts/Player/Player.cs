@@ -2,18 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonobehaviourSingleton<Player>
 {
     [Header("Settings")]
     public float speed = 10f;
     public float gravityFactor = 000.1f;
     public bool gravity = true;
     public ParticleSystem smoke;
+    public float fuel = 100f;
+
+    [HideInInspector]
+    public float horizontalSpeed = 0f;
+    [HideInInspector]
+    public float verticalSpeed = 0f;
+    [HideInInspector]
+    public float altitude = 0f;
+    [HideInInspector]
+    public float score = 0f;
 
     Rigidbody2D rb;
     float screenRatio;
     float orthographicWidth;
     Vector2 playerSize;
+
+    public override void Awake()
+    {
+        base.Awake();
+    }
 
     void Start()
     {
@@ -31,6 +46,7 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         Move();
+        CheckSpeeds();
     }
 
     private void LateUpdate()
@@ -96,5 +112,11 @@ public class Player : MonoBehaviour
         }
 
         transform.position = pos;
+    }
+
+    void CheckSpeeds()
+    {
+        horizontalSpeed = Vector2.Dot(rb.velocity, Vector2.right) * 100f;
+        verticalSpeed = Vector2.Dot(rb.velocity, Vector2.up) * 100f;
     }
 }
