@@ -9,7 +9,12 @@ public class Player : MonobehaviourSingleton<Player>
     public float gravityFactor = 000.1f;
     public bool gravity = true;
     public ParticleSystem smoke;
-    public float fuel = 100f;
+    public float fuel = 1000f;
+    public float fuelCost = 0.1f;
+
+    [Header("Height Detection Settings")]
+    public float rayDistance = 100f;
+    public LayerMask layerMask;
 
     [HideInInspector]
     public float horizontalSpeed = 0f;
@@ -17,13 +22,13 @@ public class Player : MonobehaviourSingleton<Player>
     public float verticalSpeed = 0f;
     [HideInInspector]
     public float altitude = 0f;
-    [HideInInspector]
-    public float score = 0f;
 
+    bool isGrounded = false;
     Rigidbody2D rb;
     float screenRatio;
     float orthographicWidth;
     Vector2 playerSize;
+    
 
     public override void Awake()
     {
@@ -40,13 +45,21 @@ public class Player : MonobehaviourSingleton<Player>
         if (gravity)
         {
             AffectByGravity();
-        } 
+        }
     }
 
     void FixedUpdate()
     {
-        Move();
+        if (fuel > 0f)
+        {
+            Move();
+        }
+        else
+        {
+            fuel = 0f;
+        }
         CheckSpeeds();
+        GetAltitude();
     }
 
     private void LateUpdate()
@@ -67,6 +80,8 @@ public class Player : MonobehaviourSingleton<Player>
         if (Input.GetKey(KeyCode.Space))
         {
             rb.AddForce(transform.up * speed * Time.fixedDeltaTime);
+
+            fuel -= fuelCost;
             smoke.Play();
         }
         if (Input.GetKeyUp(KeyCode.Space))
@@ -118,5 +133,23 @@ public class Player : MonobehaviourSingleton<Player>
     {
         horizontalSpeed = Vector2.Dot(rb.velocity, Vector2.right) * 100f;
         verticalSpeed = Vector2.Dot(rb.velocity, Vector2.up) * 100f;
+    }
+
+    void GetAltitude()
+    {
+        RaycastHit2D hit;
+
+        hit = Physics2D.Raycast(transform.position, -Vector3.up,rayDistance,layerMask);
+        Vector2 pos = new Vector2(transform.position.x, transform.position.y - playerSize.y);
+        
+
+        if (hit)
+        {
+            altitude = Vector2.Distance(pos, hit.point) * 100f;
+            if (altitude < 2f)
+            {
+                altitude = 0f;
+            }
+        }
     }
 }
