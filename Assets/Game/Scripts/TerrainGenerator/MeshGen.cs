@@ -197,13 +197,19 @@ public class MeshGen : MonoBehaviour
             // generate
             Mesh mesh = filter.mesh;
             GenerateSegment(index, ref mesh);
+            // add mesh collider
+            if (filter.gameObject.GetComponent<PolygonCollider2D>() == null)
+            {
+                filter.gameObject.AddComponent<PolygonCollider2D>();
+                //filter.gameObject.GetComponent<PolygonCollider2D>().
 
+            }
             // position
             filter.transform.position = new Vector3(index * SegmentLength, 0, 0);
 
             // make visible
             filter.gameObject.SetActive(true);
-
+            
             // register as visible segment
             Segment segment = new Segment();
             segment.Index = index;
