@@ -8,12 +8,16 @@ public class CameraController : MonoBehaviour
     public float minAltitudeToZoom = 20f;
     public Vector3 offset;
     public GameObject sCam;
+    public float camZoomSpeed = 1;
+
+    Camera secCam;
 
     Player player;
 
     void Start()
     {
-        player = Player.Get();   
+        player = Player.Get();
+        secCam = sCam.GetComponent<Camera>();
     }
 
     void Update()
@@ -37,7 +41,9 @@ public class CameraController : MonoBehaviour
     {
         if (player.deadFlag)
         {
-            sCam.SetActive(false);
+            float oSize = Mathf.Lerp(sCam.GetComponent<Camera>().orthographicSize, 5, Time.deltaTime * camZoomSpeed);
+            secCam.orthographicSize = oSize;
+            sCam.transform.position = new Vector3(0,0, sCam.transform.position.z);
         }
     }
 }

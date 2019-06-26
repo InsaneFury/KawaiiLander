@@ -84,9 +84,10 @@ public class Player : MonobehaviourSingleton<Player>
         bool checkVerticalSpeed = (verticalSpeed > minVerticalSpeed || verticalSpeed < -minVerticalSpeed);
         bool checkHorizontalSpeed = (horizontalSpeed > minHorizontalSpeed || horizontalSpeed < -minHorizontalSpeed);
 
-        if (collision.collider && (checkVerticalSpeed && checkHorizontalSpeed))
+        if (collision.collider && (checkVerticalSpeed || checkHorizontalSpeed))
         {
-            Instantiate(deadPlayer, transform.position, transform.rotation);
+            Instantiate(deadPlayer, transform.position, Quaternion.identity);
+            deadFlag = true;
             gameObject.SetActive(false);
         }
     }
