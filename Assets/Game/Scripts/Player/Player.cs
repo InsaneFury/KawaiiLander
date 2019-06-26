@@ -16,6 +16,13 @@ public class Player : MonobehaviourSingleton<Player>
     public float rayDistance = 100f;
     public LayerMask layerMask;
 
+    [Header("Landing Settings")]
+    public float minHorizontalSpeed = 7f;
+    public float minVerticalSpeed = 7f;
+    public GameObject deadPlayer;
+
+    [HideInInspector]
+    public bool deadFlag = false;
     [HideInInspector]
     public float horizontalSpeed = 0f;
     [HideInInspector]
@@ -65,6 +72,23 @@ public class Player : MonobehaviourSingleton<Player>
     private void LateUpdate()
     {
         ScreenPlayerLimit();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        horizontalSpeed = Vector2.Dot(rb.velocity, Vector2.right) * 100f;
+        verticalSpeed = Vector2.Dot(rb.velocity, Vector2.up) * 100f;
+
+        Debug.Log(horizontalSpeed + "____" + verticalSpeed);
+
+        bool checkVerticalSpeed = (verticalSpeed > minVerticalSpeed || verticalSpeed < -minVerticalSpeed);
+        bool checkHorizontalSpeed = (horizontalSpeed > minHorizontalSpeed || horizontalSpeed < -minHorizontalSpeed);
+
+        if (collision.collider && (checkVerticalSpeed && checkHorizontalSpeed))
+        {
+            Instantiate(deadPlayer, transform.position, transform.rotation);
+            gameObject.SetActive(false);
+        }
     }
 
     void Move()

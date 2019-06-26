@@ -19,7 +19,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!1 &8772746266763975878
 GameObject:
@@ -32,7 +32,7 @@ GameObject:
   - component: {fileID: 8772746266763975879}
   m_Layer: 0
   m_Name: t1
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -63,6 +63,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: terrain_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144292440095801609, guid: 6cfd7e10a7d852644966e9622b5adb50,
+        type: 3}
+      propertyPath: m_TagString
+      value: Terrain
       objectReference: {fileID: 0}
     - target: {fileID: 2144292440095801612, guid: 6cfd7e10a7d852644966e9622b5adb50,
         type: 3}
@@ -128,6 +133,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2144292440095801615, guid: 6cfd7e10a7d852644966e9622b5adb50,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2144292441518678479, guid: 6cfd7e10a7d852644966e9622b5adb50,
         type: 3}

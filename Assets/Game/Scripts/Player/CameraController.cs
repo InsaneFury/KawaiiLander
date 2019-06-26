@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         ZoomToPlayer();
+        SwitchCamera();
     }
 
     void ZoomToPlayer()
@@ -28,6 +29,13 @@ public class CameraController : MonoBehaviour
             sCam.SetActive(true);
         }
         else if (player.altitude > minAltitudeToZoom)
+        {
+            sCam.SetActive(false);
+        }
+    }
+    void SwitchCamera()
+    {
+        if (player.deadFlag)
         {
             sCam.SetActive(false);
         }
