@@ -21,6 +21,9 @@ public class Player : MonobehaviourSingleton<Player>
     public float minVerticalSpeed = 7f;
     public GameObject deadPlayer;
 
+    [Header("RestartSettings")]
+    public Vector3 spawnPosition;
+
     [HideInInspector]
     public bool deadFlag = false;
     [HideInInspector]
@@ -35,7 +38,9 @@ public class Player : MonobehaviourSingleton<Player>
     float screenRatio;
     float orthographicWidth;
     Vector2 playerSize;
-    
+
+    public delegate void PlayerAction();
+    public static PlayerAction OnPlayerDie;
 
     public override void Awake()
     {
@@ -53,6 +58,7 @@ public class Player : MonobehaviourSingleton<Player>
         {
             AffectByGravity();
         }
+        OnPlayerDie += Die;
     }
 
     void FixedUpdate()
@@ -86,9 +92,7 @@ public class Player : MonobehaviourSingleton<Player>
 
         if (collision.collider && (checkVerticalSpeed || checkHorizontalSpeed))
         {
-            Instantiate(deadPlayer, transform.position, Quaternion.identity);
-            deadFlag = true;
-            gameObject.SetActive(false);
+            OnPlayerDie();
         }
     }
 
@@ -135,20 +139,24 @@ public class Player : MonobehaviourSingleton<Player>
 
         if (upLimit)
         {
-            pos.y = Camera.main.orthographicSize - playerSize.y;
+            rb.velocity = Vector2.zero;
+            rb.AddForce(-Vector2.up);
         }
         if (downLimit)
         {
-            pos.y = -Camera.main.orthographicSize + playerSize.y;
+            rb.velocity = Vector2.zero;
+            rb.AddForce(Vector2.up);
         }
 
         if (rightLimit)
         {
-            pos.x = orthographicWidth - playerSize.x;
+            rb.velocity = Vector2.zero;
+            rb.AddForce(Vector2.left);
         }
         if (leftLimit)
         {
-            pos.x = -orthographicWidth + playerSize.x;
+            rb.velocity = Vector2.zero;
+            rb.AddForce(Vector2.right);
         }
 
         transform.position = pos;
@@ -167,14 +175,28 @@ public class Player : MonobehaviourSingleton<Player>
         hit = Physics2D.Raycast(transform.position, -Vector3.up,rayDistance,layerMask);
         Vector2 pos = new Vector2(transform.position.x, transform.position.y - playerSize.y);
         
-
         if (hit)
         {
             altitude = Vector2.Distance(pos, hit.point) * 100f;
-            if (altitude < 2f)
+            if (altitude < 2f)//just Rounding
             {
                 altitude = 0f;
             }
         }
+    }
+
+    void Die()
+    {
+        Instantiate(deadPlayer, transform.position, Quaternion.identity);
+        deadFlag = true;
+        gameObject.SetActive(false);
+    }
+
+    public void RestartPlayer()
+    {
+        transform.position = spawnPosition;
+        deadFlag = false;
+        gameObject.SetActive(true);
+        rb.velocity = Vector2.zero;
     }
 }
