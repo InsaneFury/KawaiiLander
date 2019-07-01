@@ -32,8 +32,9 @@ public class Player : MonobehaviourSingleton<Player>
     public float verticalSpeed = 0f;
     [HideInInspector]
     public float altitude = 0f;
+    [HideInInspector]
+    public bool isGrounded = false;
 
-    bool isGrounded = false;
     Rigidbody2D rb;
     float screenRatio;
     float orthographicWidth;
@@ -41,6 +42,7 @@ public class Player : MonobehaviourSingleton<Player>
 
     public delegate void PlayerAction();
     public static PlayerAction OnPlayerDie;
+    public static PlayerAction OnPlayerVictory;
 
     public override void Awake()
     {
@@ -59,6 +61,7 @@ public class Player : MonobehaviourSingleton<Player>
             AffectByGravity();
         }
         OnPlayerDie += Die;
+        OnPlayerVictory += PlayerLanded;
     }
 
     void FixedUpdate()
@@ -85,14 +88,16 @@ public class Player : MonobehaviourSingleton<Player>
         horizontalSpeed = Vector2.Dot(rb.velocity, Vector2.right) * 100f;
         verticalSpeed = Vector2.Dot(rb.velocity, Vector2.up) * 100f;
 
-        Debug.Log(horizontalSpeed + "____" + verticalSpeed);
-
         bool checkVerticalSpeed = (verticalSpeed > minVerticalSpeed || verticalSpeed < -minVerticalSpeed);
         bool checkHorizontalSpeed = (horizontalSpeed > minHorizontalSpeed || horizontalSpeed < -minHorizontalSpeed);
 
         if (collision.collider && (checkVerticalSpeed || checkHorizontalSpeed))
         {
             OnPlayerDie();
+        }
+        else
+        {
+            OnPlayerVictory();
         }
     }
 
@@ -140,23 +145,23 @@ public class Player : MonobehaviourSingleton<Player>
         if (upLimit)
         {
             rb.velocity = Vector2.zero;
-            rb.AddForce(-Vector2.up);
+            rb.velocity = -Vector2.up;
         }
         if (downLimit)
         {
             rb.velocity = Vector2.zero;
-            rb.AddForce(Vector2.up);
+            rb.velocity = Vector2.up;
         }
 
         if (rightLimit)
         {
             rb.velocity = Vector2.zero;
-            rb.AddForce(Vector2.left);
+            rb.velocity = Vector2.left;
         }
         if (leftLimit)
         {
             rb.velocity = Vector2.zero;
-            rb.AddForce(Vector2.right);
+            rb.velocity = Vector2.right;
         }
 
         transform.position = pos;
@@ -198,5 +203,12 @@ public class Player : MonobehaviourSingleton<Player>
         deadFlag = false;
         gameObject.SetActive(true);
         rb.velocity = Vector2.zero;
+        isGrounded = false;
+    }
+
+    public void PlayerLanded()
+    {
+        rb.velocity = Vector2.zero;
+        isGrounded = true;
     }
 }

@@ -7,6 +7,9 @@ public class GameManager : MonobehaviourSingleton<GameManager>
     public float time = 0f;
     public bool gameOver = false;
 
+    UIGameplayManager uigManager;
+    ScoreManager sManager;
+
     public override void Awake()
     {
         base.Awake();
@@ -14,7 +17,10 @@ public class GameManager : MonobehaviourSingleton<GameManager>
 
     private void Start()
     {
+        uigManager = UIGameplayManager.Get();
+        sManager = ScoreManager.Get();
         Player.OnPlayerDie += GameOver;
+        Player.OnPlayerVictory += GameOver;
     }
 
     void Update()
@@ -28,10 +34,13 @@ public class GameManager : MonobehaviourSingleton<GameManager>
     void GameOver()
     {
         gameOver = true;
+        uigManager.EnableLandingPanel();
     }
 
     void Restart()
     {
+        Player.Get().RestartPlayer();
         gameOver = false;
+        sManager.startScorePerTime();
     }
 }
