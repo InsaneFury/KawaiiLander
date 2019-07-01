@@ -25,7 +25,7 @@ public class tGenerator : MonoBehaviour
         }
     }
 
-    void Create()
+    public void Create()
     {
         if (terrains.Count > 0)
         {

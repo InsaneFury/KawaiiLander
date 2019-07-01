@@ -6,8 +6,12 @@ public class ScoreManager : MonobehaviourSingleton<ScoreManager>
 {
     [HideInInspector]
     public float score = 0f;
-    public float scorePerSecond = 10f;
+    public float scoreToAdd = 100f;
+    public bool scoreAddingCycle = true;
+
     GameManager gManager;
+    Player player;
+    
 
     public override void Awake()
     {
@@ -16,25 +20,20 @@ public class ScoreManager : MonobehaviourSingleton<ScoreManager>
 
     void Start()
     {
+        player = Player.Get();
         gManager = GameManager.Get();
-        startScorePerTime();
+        Player.OnPlayerVictory += AddScore;
     }
 
-    private void Update()
+    public void AddScore()
     {
-        if (gManager.gameOver)
+        if (player.isGrounded)
         {
-            CancelInvoke("ScorePerTime");
+            score += scoreToAdd;
         }
-    }
-
-    void ScorePerTime()
-    {
-        score += scorePerSecond;
-    }
-
-    public void startScorePerTime()
-    {
-        InvokeRepeating("ScorePerTime", 0f, 1f);
+        else
+        {
+            score = 0;
+        }
     }
 }

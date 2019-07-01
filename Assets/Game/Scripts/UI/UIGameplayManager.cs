@@ -17,6 +17,11 @@ public class UIGameplayManager : MonobehaviourSingleton<UIGameplayManager>
     public GameObject landingPanel;
     public GameObject gameOverUI;
     public GameObject victoryUI;
+    public Text landingScore;
+
+    [Header("Level")]
+    public GameObject levelPanel;
+    public Text levelText;
 
     Player player;
     GameManager gManager;
@@ -52,13 +57,20 @@ public class UIGameplayManager : MonobehaviourSingleton<UIGameplayManager>
     public void EnableLandingPanel()
     {
         landingPanel.SetActive(true);
+        landingScore.text = score.text;
         if (player.isGrounded)
         {
             victoryUI.SetActive(true);
+            gameOverUI.SetActive(false);
+            gManager.level++;
+            SetLevel();
         }
         else if (!player.isGrounded)
         {
+            victoryUI.SetActive(false);
             gameOverUI.SetActive(true);
+            gManager.level = 0;
+            SetLevel();
         }
     }
 
@@ -67,5 +79,15 @@ public class UIGameplayManager : MonobehaviourSingleton<UIGameplayManager>
         landingPanel.SetActive(false);
         victoryUI.SetActive(false);
         gameOverUI.SetActive(false);
+    }
+
+    public void SetLevel()
+    {
+        levelText.text = gManager.level.ToString();
+    }
+
+    public void ActiveLevelPanel()
+    {
+        levelPanel.SetActive(true);
     }
 }

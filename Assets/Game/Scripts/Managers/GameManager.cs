@@ -9,6 +9,7 @@ public class GameManager : MonobehaviourSingleton<GameManager>
 
     UIGameplayManager uigManager;
     ScoreManager sManager;
+    public int level = 1;
 
     public override void Awake()
     {
@@ -33,14 +34,17 @@ public class GameManager : MonobehaviourSingleton<GameManager>
 
     void GameOver()
     {
+        sManager.AddScore(); 
         gameOver = true;
         uigManager.EnableLandingPanel();
     }
 
-    void Restart()
+    public void Restart()
     {
         Player.Get().RestartPlayer();
         gameOver = false;
-        sManager.startScorePerTime();
+        sManager.scoreAddingCycle = true;
+        time = 0;
+        uigManager.ActiveLevelPanel();
     }
 }

@@ -43,7 +43,11 @@ public class CameraController : MonoBehaviour
         {
             float oSize = Mathf.Lerp(sCam.GetComponent<Camera>().orthographicSize, 5, Time.deltaTime * camZoomSpeed);
             secCam.orthographicSize = oSize;
-            sCam.transform.position = new Vector3(0,0, sCam.transform.position.z);
+            sCam.transform.position = new Vector3(0, 0, sCam.transform.position.z);
+        }
+        else
+        {
+            secCam.GetComponent<CameraFollow>().RestartFollowCamera();
         }
     }
 }
